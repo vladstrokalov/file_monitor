@@ -1,0 +1,14 @@
+[Unit]
+Description=Monitor TCP Server Service
+After=network.target
+
+[Service]
+ExecStart=/path to file/server -l /var/log/monitorserver.log
+Restart=always
+User=vlad
+WorkingDirectory=/path to file
+StandardOutput=append:/var/log/tcp_server.log
+StandardError=append:/var/log/tcp_server.log
+
+[Install]
+WantedBy=multi-user.target

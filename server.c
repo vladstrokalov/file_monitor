@@ -22,7 +22,7 @@ int client_socket = -1;
 static const char *eventTypeNames[] = {"UNKNOWN","CREATED","DELETED","MODIFIED","MOVED TO","MOVED FROM"};
 
 void usage() {
-	printf("usage: notify_server [-p порт] сервера\n");
+	printf("usage: server [-p порт] сервера [-l logfilename]\n");
 }
 // Обработка сигналос INT,KILL
 void signal_function(int f){
@@ -79,6 +79,7 @@ int main(int argc,char *argv[]) {
 	char logFileName[PATH_MAX];
 	FILE *logFile = {0};
 
+	sprintf(logFileName,"%s.log",argv[0]);
 	// Разбор параметров командной строки
 	for (int i = 1; i < argc; i++) {
 		if (i + 1 < argc) {
@@ -87,8 +88,14 @@ int main(int argc,char *argv[]) {
 				i++;
 			}
 			else {
-				usage();
-				return -1;
+				if (strcmp(argv[i], "-l") == 0) {
+					strcpy(logFileName,argv[i + 1]);
+					i++;
+				}
+				else {
+					usage();
+					return -1;
+				}
 			}
 		}
 		else {
@@ -123,7 +130,6 @@ int main(int argc,char *argv[]) {
 	}
 
 	printf("Сервер запущен и ждет подключений на порту %d...\n", port);
-	sprintf(logFileName,"%s.log",argv[0]);
 	logFile = fopen(logFileName,"w+t");
 	if(!logFile){
 		perror("Ошибка открытия лог-файла");
